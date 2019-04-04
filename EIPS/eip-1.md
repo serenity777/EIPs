@@ -53,7 +53,7 @@ Each status change is requested by the EIP author and reviewed by the EIP editor
   * :arrow_right: Draft -- If agreeable, EIP editor will assign the EIP a number (generally the issue or PR number related to the EIP) and merge your pull request. The EIP editor will not unreasonably deny an EIP.
   * :x: Draft -- Reasons for denying draft status include being too unfocused, too broad, duplication of effort, being technically unsound, not providing proper motivation or addressing backwards compatibility, or not in keeping with the [Ethereum philosophy](https://github.com/ethereum/wiki/wiki/White-Paper#philosophy).
 * **Draft** -- Once the first draft has been merged, you may submit follow-up pull requests with further changes to your draft until such point as you believe the EIP to be mature and ready to proceed to the next status. An EIP in draft status must be implemented to be considered for promotion to the next status (ignore this requirement for core EIPs).
-  * :arrow_right: Last Call -- If agreeable, the EIP editor will assign Last Call status and set a review end date, normally 14 days later.
+  * :arrow_right: Last Call -- If agreeable, the EIP editor will assign Last Call status and set a review end date (`review-period-end`), normally 14 days later.
   * :x: Last Call -- A request for Last Call status will be denied if material changes are still expected to be made to the draft. We hope that EIPs only enter Last Call once, so as to avoid unnecessary noise on the RSS feed.
 * **Last Call** -- This EIP will listed prominently on the http://eips.ethereum.org/ website (subscribe via RSS at [last-call.xml](/last-call.xml)).
   * :x: -- A Last Call which results in material changes or substantial unaddressed technical complaints will cause the EIP to revert to Draft.
@@ -65,10 +65,10 @@ Each status change is requested by the EIP author and reviewed by the EIP editor
 
 Other exceptional statuses include:
 
-* Deferred -- This is for core EIPs that have been put off for a future hard fork.
-* Rejected -- An EIP that is fundamentally broken or a Core EIP that was rejected by the Core Devs and will not be implemented.
-* Active -- This is similar to Final, but denotes an EIP which which may be updated without changing its EIP number.
-* Superseded -- An EIP which was previously final but is no longer considered state-of-the-art. Another EIP will be in Final status and reference the Superseded EIP.
+* **Deferred** -- This is for core EIPs that have been put off for a future hard fork.
+* **Rejected** -- An EIP that is fundamentally broken or a Core EIP that was rejected by the Core Devs and will not be implemented.
+* **Active** -- This is similar to Final, but denotes an EIP which may be updated without changing its EIP number.
+* **Superseded** -- An EIP which was previously final but is no longer considered state-of-the-art. Another EIP will be in Final status and reference the Superseded EIP.
 
 ## What belongs in a successful EIP?
 
@@ -102,17 +102,15 @@ Each EIP must begin with an RFC 822 style header preamble, preceded and followed
 
 ` * discussions-to:` \<a url pointing to the official discussion thread\>
 
- - :x: `discussions-to` can not be a Github `Pull-Request`.
-
 ` status:` <Draft | Last Call | Accepted | Final | Active | Deferred | Rejected | Superseded>
 
-`* review-period-end: YYYY-MM-DD
+`* review-period-end:` <date review period ends>
 
-` type: `<Standards Track (Core, Networking, Interface, ERC)  | Informational | Meta>
+` type:` <Standards Track (Core, Networking, Interface, ERC)  | Informational | Meta>
 
 ` * category:` <Core | Networking | Interface | ERC>
 
-` created:` <date created on, in ISO 8601 (yyyy-mm-dd) format>
+` created:` <date created on>
 
 ` * requires:` <EIP number(s)>
 
@@ -122,37 +120,57 @@ Each EIP must begin with an RFC 822 style header preamble, preceded and followed
 
 ` * resolution:` \<a url pointing to the resolution of this EIP\>
 
-#### Author header
+Headers that permit lists must separate elements with commas.
 
-The author header optionally lists the names, email addresses or usernames of the authors/owners of the EIP. Those who prefer anonymity may use a username only, or a first name and a username. The format of the author header value must be:
+Headers requiring dates will always do so in the format of ISO 8601 (yyyy-mm-dd).
 
-Random J. User &lt;address@dom.ain&gt;
+#### `author` header
+
+The `author` header optionally lists the names, email addresses or usernames of the authors/owners of the EIP. Those who prefer anonymity may use a username only, or a first name and a username. The format of the author header value must be:
+
+> Random J. User &lt;address@dom.ain&gt;
 
 or
 
-Random J. User (@username)
+> Random J. User (@username)
 
 if the email address or GitHub username is included, and
 
-Random J. User
+> Random J. User
 
 if the email address is not given.
 
-Note: The resolution header is required for Standards Track EIPs only. It contains a URL that should point to an email message or other web resource where the pronouncement about the EIP is made.
+#### `resolution` header
 
-While an EIP is a draft, a discussions-to header will indicate the mailing list or URL where the EIP is being discussed. As mentioned above, examples for places to discuss your EIP include [Ethereum topics on Gitter](https://gitter.im/ethereum/topics), an issue in this repo or in a fork of this repo, [Ethereum Magicians](https://ethereum-magicians.org/) (this is suitable for EIPs that may be contentious or have a strong governance aspect), and [Reddit r/ethereum](https://www.reddit.com/r/ethereum/). No discussions-to header is necessary if the EIP is being discussed privately with the author.
+The `resolution` header is required for Standards Track EIPs only. It contains a URL that should point to an email message or other web resource where the pronouncement about the EIP is made.
 
-The type header specifies the type of EIP: Standards Track, Meta, or Informational. If the track is Standards please include the subcategory (core, networking, interface, or ERC).
+#### `discussions-to` header
 
-The category header specifies the EIP's category. This is required for standards-track EIPs only.
+While an EIP is a draft, a `discussions-to` header will indicate the mailing list or URL where the EIP is being discussed. As mentioned above, examples for places to discuss your EIP include [Ethereum topics on Gitter](https://gitter.im/ethereum/topics), an issue in this repo or in a fork of this repo, [Ethereum Magicians](https://ethereum-magicians.org/) (this is suitable for EIPs that may be contentious or have a strong governance aspect), and [Reddit r/ethereum](https://www.reddit.com/r/ethereum/).
 
-The created header records the date that the EIP was assigned a number. Both headers should be in yyyy-mm-dd format, e.g. 2001-08-14.
+No `discussions-to` header is necessary if the EIP is being discussed privately with the author.
 
-EIPs may have a requires header, indicating the EIP numbers that this EIP depends on.
+As a single exception, `discussions-to` cannot point to GitHub pull requests.
 
-EIPs may also have a superseded-by header indicating that an EIP has been rendered obsolete by a later document; the value is the number of the EIP that replaces the current document. The newer EIP must have a Replaces header containing the number of the EIP that it rendered obsolete.
+#### `type` header
 
-Headers that permit lists must separate elements with commas.
+The `type` header specifies the type of EIP: Standards Track, Meta, or Informational. If the track is Standards please include the subcategory (core, networking, interface, or ERC).
+
+#### `category` header
+
+The `category` header specifies the EIP's category. This is required for standards-track EIPs only.
+
+#### `created` header
+
+The `created` header records the date that the EIP was assigned a number. Both headers should be in yyyy-mm-dd format, e.g. 2001-08-14.
+
+#### `requires` header
+
+EIPs may have a `requires` header, indicating the EIP numbers that this EIP depends on.
+
+#### `superseded-by` and `replaces` headers
+
+EIPs may also have a `superseded-by` header indicating that an EIP has been rendered obsolete by a later document; the value is the number of the EIP that replaces the current document. The newer EIP must have a `replaces` header containing the number of the EIP that it rendered obsolete.
 
 ## Auxiliary Files
 
